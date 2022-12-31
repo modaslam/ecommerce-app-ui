@@ -5,10 +5,7 @@ import {
   Navbar,
   Button,
   Group,
-  Box,
   Header,
-  Footer,
-  Aside,
   Text,
   MediaQuery,
   Burger,
@@ -17,6 +14,7 @@ import {
   SimpleGrid,
   Tooltip,
   Stack,
+  Divider,
   useMantineTheme,
 } from "@mantine/core";
 import { useAuth } from "../../hooks/useAuth";
@@ -47,9 +45,10 @@ export const HomePage = () => {
           <Navbar.Section grow component={ScrollArea} mx="-xs" px="xs">
             {/* Links sections */}
           </Navbar.Section>
+          <Divider mx="1rem" />
           <Navbar.Section mt="md">
             <Group position="center">
-              <Text>{user.email}</Text>
+              <Text>{user.username}</Text>
               <Button
                 fullWidth
                 radius="xs"
@@ -87,17 +86,28 @@ export const HomePage = () => {
       {products && (
         <SimpleGrid cols={3} spacing="lg" verticalSpacing="xl">
           {products.map((product) => (
-            <Group key={product?.id} color={theme.colors.gray[6]} style={{cursor: "pointer"}}>
+            <Group
+              key={product?.id}
+              color={theme.colors.gray[6]}
+              style={{
+                cursor: "pointer",
+                backgroundColor: theme.colors.gray[3],
+                justifyContent: "center",
+              }}
+            >
               <Image
-                radius="md"
+                mt="0.2rem"
+                radius="xs"
                 src={product?.image}
                 alt={product?.title}
-                width={240}
+                width={250}
                 height={280}
               />
-              <Stack spacing="xs">
+              <Stack spacing="xs" px="1rem">
                 <Tooltip label={product?.title}>
-                  <Text lineClamp={1}>{product?.title}</Text>
+                  <Text lineClamp={1} fw={500}>
+                    {product?.title}
+                  </Text>
                 </Tooltip>
                 <Text lineClamp={1}>${product?.price}</Text>
               </Stack>
