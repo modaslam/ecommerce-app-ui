@@ -3,7 +3,7 @@ import {
   PasswordInput,
   Button,
   Group,
-  Box,
+  LoadingOverlay,
   Center,
   AppShell,
 } from "@mantine/core";
@@ -15,7 +15,7 @@ import { useNotification } from "../../hooks/useNotification";
 
 export const Login = () => {
   const { login } = useAuth();
-  const { mutate: loginUser } = useLogin();
+  const { mutate: loginUser, isLoading } = useLogin();
   const [visible, { toggle }] = useDisclosure(false);
 
   const form = useForm({
@@ -29,7 +29,6 @@ export const Login = () => {
   });
 
   const handleSubmit = (values) => {
-    console.log("values is : ", values);
     loginUser(values, {
       onSuccess: (data) => {
         login({ ...values, authToken: data?.data?.token });
@@ -48,7 +47,8 @@ export const Login = () => {
 
   return (
     <AppShell>
-      <Center style={{ height: "90vh" }}>
+      <Center style={{ height: "100vh" }}>
+      <LoadingOverlay visible={isLoading} overlayBlur={2} />
         <form onSubmit={form.onSubmit((values) => handleSubmit(values))}>
           <TextInput
             mb="1rem"

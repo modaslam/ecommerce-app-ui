@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useFetchProducts } from "../../apis/useProduct";
+import { useFetchProducts, useFetchAllCategories } from "../../apis/useProduct";
 import {
   AppShell,
   Navbar,
@@ -7,27 +7,43 @@ import {
   Group,
   Header,
   Text,
-  MediaQuery,
-  Burger,
   ScrollArea,
   Image,
   SimpleGrid,
-  Tooltip,
-  Stack,
+  Checkbox,
   Divider,
+  ActionIcon,
+  Accordion,
+  Avatar,
   useMantineTheme,
 } from "@mantine/core";
+import { IconAdjustments } from "@tabler/icons";
 import { useAuth } from "../../hooks/useAuth";
+import { ProductCard } from "../../components/product-card/ProductCard";
 
 export const HomePage = () => {
   const theme = useMantineTheme();
   const { user, logout } = useAuth();
-  const { data: products } = useFetchProducts();
-  const [opened, setOpened] = useState(false);
+  const {
+    data: allProducts,
+    isLoading: isLoadingAllProducts,
+    refetch: refetchAllProducts,
+  } = useFetchProducts();
+  const { data: categories, isLoading: isLoadingCategories } =
+    useFetchAllCategories();
+  const [sortProduct, setSortProduct] = useState("asc");
+  const [productList, setProductList] = useState([]);
+  const [selectedCategories, setSelectedCategories] = useState([]);
 
   useEffect(() => {
-    console.log("Products are: ", products);
-  }, [products]);
+    if (!isLoadingAllProducts) setProductList(allProducts);
+  }, [allProducts]);
+
+  useEffect(() => {
+    console.log();
+  });
+
+  const capitalize = (str) => str.charAt(0).toUpperCase() + str.slice(1);
 
   return (
     <AppShell
@@ -40,14 +56,38 @@ export const HomePage = () => {
         },
       })}
       navbar={
-        <Navbar hiddenBreakpoint="sm" hidden={!opened} width={{ base: 300 }}>
+        <Navbar width={{ base: 300 }}>
           <Navbar.Section mt="xs">{/* Header with logo */}</Navbar.Section>
           <Navbar.Section grow component={ScrollArea} mx="-xs" px="xs">
-            {/* Links sections */}
+            <Accordion defaultValue="categories">
+              <Accordion.Item value="categories">
+                <Accordion.Control>Select Category</Accordion.Control>
+                <Accordion.Panel>
+                  {categories ? (
+                    categories.map((category, index) => (
+                      <Checkbox
+                        key={index}
+                        value={category}
+                        label={capitalize(category)}
+                        onChange={(event) => console.log(event.currentTarget.value)}
+                      />
+                    ))
+                  ) : (
+                    <Text>
+                      Colors, fonts, shadows and many other parts are
+                      customizable to fit your design needs
+                    </Text>
+                  )}
+                </Accordion.Panel>
+              </Accordion.Item>
+            </Accordion>
           </Navbar.Section>
           <Divider mx="1rem" />
           <Navbar.Section mt="md">
-            <Group position="center">
+            <Group>
+              <Avatar color="cyan" radius="xl" ml="1rem">
+                {user.username[0].toUpperCase()}
+              </Avatar>
               <Text>{user.username}</Text>
               <Button
                 fullWidth
@@ -66,54 +106,26 @@ export const HomePage = () => {
       header={
         <Header height={{ base: 50, md: 70 }} p="md">
           <div
-            style={{ display: "flex", alignItems: "center", height: "100%" }}
+            style={{
+              display: "flex",
+              alignItems: "center",
+              height: "100%",
+              justifyContent: "space-between",
+            }}
           >
-            <MediaQuery largerThan="sm" styles={{ display: "none" }}>
-              <Burger
-                opened={opened}
-                onClick={() => setOpened((open) => !open)}
-                color={theme.colors.gray[6]}
-                size="sm"
-                mr="xl"
-              />
-            </MediaQuery>
-
             <Text>Ecommerce App</Text>
+            <ActionIcon>
+              <IconAdjustments size={18} />
+            </ActionIcon>
           </div>
         </Header>
       }
     >
-      {products && (
+      {productList.length > 0 && (
         <SimpleGrid cols={3} spacing="lg" verticalSpacing="xl">
-          {products.map((product) => (
-            <Group
-              key={product?.id}
-              color={theme.colors.gray[6]}
-              style={{
-                cursor: "pointer",
-                backgroundColor: theme.colors.gray[3],
-                justifyContent: "center",
-              }}
-            >
-              <Image
-                mt="0.2rem"
-                radius="xs"
-                src={product?.image}
-                alt={product?.title}
-                width={250}
-                height={280}
-              />
-              <Stack spacing="xs" px="1rem">
-                <Tooltip label={product?.title}>
-                  <Text lineClamp={1} fw={500}>
-                    {product?.title}
-                  </Text>
-                </Tooltip>
-                <Text lineClamp={1}>${product?.price}</Text>
-              </Stack>
-            </Group>
+          {productList.map((product) => (
+            <ProductCard key={product?.id} product={product} />
           ))}
-          ;
         </SimpleGrid>
       )}
     </AppShell>
