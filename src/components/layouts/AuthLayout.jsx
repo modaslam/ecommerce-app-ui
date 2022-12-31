@@ -1,7 +1,7 @@
 import { Suspense } from "react";
 import { useLoaderData, useOutlet, Await } from "react-router-dom";
 import { AuthProvider } from "../../hooks/useAuth";
-import { Alert, Loader } from "@mantine/core";
+import { Alert, Loader, Center } from "@mantine/core";
 
 export const AuthLayout = () => {
   const outlet = useOutlet();
@@ -9,7 +9,13 @@ export const AuthLayout = () => {
   const { userPromise } = useLoaderData();
 
   return (
-    <Suspense fallback={<Loader />}>
+    <Suspense
+      fallback={
+        <Center style={{height: "100vh"}}>
+          <Loader />
+        </Center>
+      }
+    >
       <Await
         resolve={userPromise}
         errorElement={

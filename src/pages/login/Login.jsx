@@ -10,23 +10,40 @@ import {
 import { useDisclosure } from "@mantine/hooks";
 import { useForm } from "@mantine/form";
 import { useAuth } from "../../hooks/useAuth";
+import { useLogin } from "../../apis/useLogin";
+import { useNotification } from "../../hooks/useNotification";
 
 export const Login = () => {
   const { login } = useAuth();
+  const { mutate: loginUser } = useLogin();
   const [visible, { toggle }] = useDisclosure(false);
 
   const form = useForm({
     initialValues: {
-      email: "",
+      username: "",
       password: "",
     },
     validate: {
-      email: (value) => (/^\S+@\S+$/.test(value) ? null : "Invalid email"),
+      username: (value) => (/^\S+$/.test(value) ? null : "Invalid username"),
     },
   });
 
   const handleSubmit = (values) => {
-    login(values);
+    console.log("values is : ", values);
+    loginUser(values, {
+      onSuccess: (data) => {
+        login({ ...values, authToken: data?.data?.token });
+        useNotification({
+          type: "success",
+          title: "Successful",
+          message: `User ${values.username} has successfully logged in.`,
+        });
+      },
+      onError: (error) => {
+        console.log("error is : ", error);
+        useNotification({ type: "error", message: error?.response?.data });
+      },
+    });
   };
 
   return (
@@ -36,9 +53,9 @@ export const Login = () => {
           <TextInput
             mb="1rem"
             withAsterisk
-            label="Email"
-            placeholder="your@email.com"
-            {...form.getInputProps("email")}
+            label="Username"
+            placeholder="Enter username"
+            {...form.getInputProps("username")}
           />
 
           <PasswordInput

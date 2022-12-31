@@ -1,4 +1,9 @@
-import { createBrowserRouter, createRoutesFromElements, Route, defer } from "react-router-dom";
+import {
+  createBrowserRouter,
+  createRoutesFromElements,
+  Route,
+  defer,
+} from "react-router-dom";
 import { ProtectedLayout } from "../components/layouts/ProtectedLayout";
 import { PublicLayout } from "../components/layouts/PublicLayout";
 import { AuthLayout } from "../components/layouts/AuthLayout";
@@ -8,12 +13,10 @@ import { NotFound } from "../pages/not-found/NotFound";
 
 // ideally this would be an API call to server to get logged in user data
 const getUserData = () =>
-  new Promise((resolve) =>
-    setTimeout(() => {
-      const user = window.localStorage.getItem("user");
-      resolve(user);
-    }, 2000)
-  );
+  new Promise((resolve) => {
+    const user = window.localStorage.getItem("user");
+    resolve(user);
+  });
 
 export const appRouter = createBrowserRouter(
   createRoutesFromElements(
