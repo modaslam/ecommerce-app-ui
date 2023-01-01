@@ -8,8 +8,8 @@ const CATEGORIES = "/categories";
 const SINGLE_PRODUCT = "/product";
 const SINGLE_CATEGORY_PRODUCTS = `${PRODUCTS}${CATEGORIES}`;
 
-const fetchProducts = (sort) => {
-  return axios(`${DEFAULT_API_CONTEXT}/products?sort=${sort}`, {
+const fetchProducts = () => {
+  return axios(`${DEFAULT_API_CONTEXT}/products`, {
     ...httpOptions.get("GET"),
   });
 };
@@ -26,19 +26,19 @@ const fetchAllCategories = () => {
   });
 };
 
-const fetchProductsFromCategory = (category, sort) => {
+const fetchProductsFromCategory = (category) => {
   return axios(
-    `${DEFAULT_API_CONTEXT}/products/category/${category}?sort=${sort}`,
+    `${DEFAULT_API_CONTEXT}/products/category/${category}`,
     {
       ...httpOptions.get("GET"),
     }
   );
 };
 
-const useFetchProducts = (sort = "asc") => {
+const useFetchProducts = () => {
   return useQuery({
     queryKey: [PRODUCTS],
-    queryFn: () => fetchProducts(sort),
+    queryFn: () => fetchProducts(),
     select: ({ data }) => data,
   });
 };
@@ -51,10 +51,10 @@ const useFetchAllCategories = () => {
   });
 };
 
-const useFetchProductsFromCategory = (category, sort = "asc") => {
+const useFetchProductsFromCategory = (category) => {
   return useQuery({
     queryKey: [SINGLE_CATEGORY_PRODUCTS, category],
-    queryFn: () => fetchProductsFromCategory(category, sort),
+    queryFn: () => fetchProductsFromCategory(category),
     select: ({ data }) => data,
     enabled: !!category,
   });
