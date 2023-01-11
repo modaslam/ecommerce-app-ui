@@ -21,6 +21,7 @@ import {
   ActionIcon,
   TextInput,
   Accordion,
+  Indicator,
   Avatar,
   Menu,
   Switch,
@@ -38,9 +39,13 @@ import {
   IconArrowBigTop,
   IconArrowBigDown,
   IconSearch,
+  IconShoppingCart,
+  IconEye,
 } from "@tabler/icons";
 import { useAuth } from "../../hooks/useAuth";
 import { ProductCard } from "../../components/product-card/ProductCard";
+import { ProductModal } from "../../components/product-modal/ProductModal";
+import { ProductCart } from "../../components/product-cart/ProductCart";
 
 const SORT_OPTIONS = [
   { label: "Name", value: "title" },
@@ -68,6 +73,10 @@ export const HomePage = () => {
   const [productList, setProductList] = useState([]);
   const [accordionValue, setAccordionValue] = useState([]);
   const [selectedCategories, setSelectedCategories] = useState([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isCartOpen, setIsCartOpen] = useState(false);
+  const [selectedProductId, setSelectedProductId] = useState(null);
+  const [productsInCart, setProductsInCart] = useState([]);
 
   const {
     data: allProducts,
@@ -137,6 +146,17 @@ export const HomePage = () => {
     return true;
   };
 
+  const addToCart = (product) => {
+    setProductsInCart((prevCart) => [...prevCart, product]);
+    setIsModalOpen(false);
+  };
+
+  const removeFromCart = (id) => {
+    setProductsInCart((prevCart) =>
+      prevCart.filter((product) => product?.id !== id)
+    );
+  };
+
   const sort = (productA, productB) => {
     if (isSortDesc) {
       // Swap productA and productB
@@ -156,6 +176,12 @@ export const HomePage = () => {
       default:
         return productA?.id - productB?.id;
     }
+  };
+
+  const clickProduct = (product) => {
+    console.log("Product clicked");
+    setSelectedProductId(product?.id);
+    setIsModalOpen(true);
   };
 
   return (
@@ -307,33 +333,73 @@ export const HomePage = () => {
             <Title order={2} color="cyan">
               Ecommerce App
             </Title>
-            <Menu shadow="md" width={200}>
-              <Menu.Target>
-                <ActionIcon color="cyan">
-                  <IconAdjustments size={18} />
-                </ActionIcon>
-              </Menu.Target>
+            <Flex
+              mih={50}
+              gap="md"
+              justify="flex-end"
+              align="center"
+              direction="row"
+              wrap="wrap"
+            >
+              <Indicator
+                label={productsInCart?.length}
+                inline
+                size={22}
+                showZero={false}
+                overflowCount={10}
+                withBorder
+                dot={false}
+              >
+                <Menu shadow="md" width={200}>
+                  <Menu.Target>
+                    <ActionIcon color="cyan">
+                      <IconShoppingCart size={22} />
+                    </ActionIcon>
+                  </Menu.Target>
+                  <Menu.Dropdown>
+                    <Menu.Item
+                      icon={<IconEye size={14} />}
+                      onClick={() => setIsCartOpen(true)}
+                    >
+                      View Cart
+                    </Menu.Item>
+                    <Menu.Item
+                      icon={<IconTrash size={14} />}
+                      onClick={() => setProductsInCart([])}
+                    >
+                      Clear Cart
+                    </Menu.Item>
+                  </Menu.Dropdown>
+                </Menu>
+              </Indicator>
+              <Menu shadow="md" width={200}>
+                <Menu.Target>
+                  <ActionIcon color="cyan">
+                    <IconAdjustments size={22} />
+                  </ActionIcon>
+                </Menu.Target>
 
-              <Menu.Dropdown>
-                <Menu.Label>Application</Menu.Label>
-                <Menu.Item icon={<IconSettings size={14} />}>
-                  Settings
-                </Menu.Item>
-                <Menu.Item icon={<IconUserCircle size={14} />}>
-                  Profile
-                </Menu.Item>
+                <Menu.Dropdown>
+                  <Menu.Label>Application</Menu.Label>
+                  <Menu.Item icon={<IconSettings size={14} />}>
+                    Settings
+                  </Menu.Item>
+                  <Menu.Item icon={<IconUserCircle size={14} />}>
+                    Profile
+                  </Menu.Item>
 
-                <Menu.Divider />
+                  <Menu.Divider />
 
-                <Menu.Label>Data and Privacy</Menu.Label>
-                <Menu.Item icon={<IconAlertCircle size={14} />}>
-                  Privacy Notice
-                </Menu.Item>
-                <Menu.Item color="red" icon={<IconTrash size={14} />}>
-                  Delete Account
-                </Menu.Item>
-              </Menu.Dropdown>
-            </Menu>
+                  <Menu.Label>Data and Privacy</Menu.Label>
+                  <Menu.Item icon={<IconAlertCircle size={14} />}>
+                    Privacy Notice
+                  </Menu.Item>
+                  <Menu.Item color="red" icon={<IconTrash size={14} />}>
+                    Delete Account
+                  </Menu.Item>
+                </Menu.Dropdown>
+              </Menu>
+            </Flex>
           </div>
         </Header>
       }
@@ -344,10 +410,27 @@ export const HomePage = () => {
             ?.filter((product) => searchProducts(product))
             ?.sort((productA, productB) => sort(productA, productB))
             ?.map((product) => (
-              <ProductCard key={product?.id} product={product} />
+              <ProductCard
+                key={product?.id}
+                product={product}
+                handleClick={clickProduct}
+              />
             ))}
         </SimpleGrid>
       )}
+      <ProductModal
+        productId={selectedProductId}
+        isOpen={isModalOpen}
+        handleClose={() => setIsModalOpen(false)}
+        addToCart={addToCart}
+      />
+      <ProductCart
+        isOpen={isCartOpen}
+        handleClose={() => setIsCartOpen(false)}
+        cart={productsInCart}
+        clickProduct={() => {}}
+        removeFromCart={removeFromCart}
+      />
     </AppShell>
   );
 };

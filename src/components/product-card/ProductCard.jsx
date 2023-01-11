@@ -6,38 +6,66 @@ import {
   Tooltip,
   Group,
   Rating,
+  Button,
+  Flex,
 } from "@mantine/core";
 
-export const ProductCard = ({ product }) => {
+export const ProductCard = ({
+  product,
+  handleClick,
+  inCart = false,
+  removeProduct,
+}) => {
   return (
-    <Tooltip label={product?.title}>
-      <Card
-        shadow="sm"
-        p="lg"
-        radius="md"
-        withBorder
-        style={{
-          cursor: "pointer",
-        }}
-      >
-        <Card.Section>
-          <Image src={product?.image} height={220} alt={product?.title} />
-        </Card.Section>
+    <div onClick={() => handleClick(product)}>
+      <Tooltip label={product?.title}>
+        <Card
+          shadow="sm"
+          p="lg"
+          radius="md"
+          withBorder
+          style={{
+            cursor: "pointer",
+          }}
+        >
+          <Card.Section>
+            <Image src={product?.image} height={220} alt={product?.title} />
+          </Card.Section>
 
-        <Group position="apart" mt="md" mb="xs">
-          <Text lineClamp={1} weight={500}>
-            {product?.title}
+          <Group position="apart" mt="md" mb="xs">
+            <Text lineClamp={1} weight={500}>
+              {product?.title}
+            </Text>
+            <Badge color="pink" variant="light">
+              On Sale
+            </Badge>
+          </Group>
+
+          <Text lineClamp={1} size="sm" color="dimmed" ml="0.25rem">
+            ${product?.price}
           </Text>
-          <Badge color="pink" variant="light">
-            On Sale
-          </Badge>
-        </Group>
-
-        <Text lineClamp={1} size="sm" color="dimmed" ml="0.25rem">
-          ${product?.price}
-        </Text>
-        <Rating value={product?.rating?.rate} fractions={3} readOnly />
-      </Card>
-    </Tooltip>
+          <Rating value={product?.rating?.rate} fractions={3} readOnly />
+          {inCart && (
+            <Flex
+              mih={50}
+              mt="1rem"
+              gap="lg"
+              justify="flex-end"
+              align="flex-end"
+              direction="row"
+              wrap="wrap"
+            >
+              <Button
+                variant="gradient"
+                gradient={{ from: "#ed6ea0", to: "red", deg: 35 }}
+                onClick={() => removeProduct(product?.id)}
+              >
+                Remove from Cart
+              </Button>
+            </Flex>
+          )}
+        </Card>
+      </Tooltip>
+    </div>
   );
 };

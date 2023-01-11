@@ -27,12 +27,9 @@ const fetchAllCategories = () => {
 };
 
 const fetchProductsFromCategory = (category) => {
-  return axios(
-    `${DEFAULT_API_CONTEXT}/products/category/${category}`,
-    {
-      ...httpOptions.get("GET"),
-    }
-  );
+  return axios(`${DEFAULT_API_CONTEXT}/products/category/${category}`, {
+    ...httpOptions.get("GET"),
+  });
 };
 
 const useFetchProducts = () => {
@@ -65,6 +62,7 @@ const useFetchSingleProduct = (productId) => {
     queryKey: [SINGLE_PRODUCT, productId],
     queryFn: () => fetchSingleProduct(productId),
     select: ({ data }) => data,
+    enabled: !!productId,
   });
 };
 

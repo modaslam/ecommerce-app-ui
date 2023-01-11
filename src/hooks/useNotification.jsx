@@ -1,7 +1,7 @@
 import { showNotification } from "@mantine/notifications";
 import { IconCheck, IconX } from "@tabler/icons";
 
-const TIMEOUT = 5000;
+const TIMEOUT = 3000;
 
 const showSuccessNotification = (title = "", message = "") =>
   showNotification({
