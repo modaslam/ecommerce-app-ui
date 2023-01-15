@@ -1,19 +1,5 @@
 import { useEffect, useState } from "react";
-import {
-  Modal,
-  useMantineTheme,
-  Image,
-  Group,
-  Flex,
-  Title,
-  Text,
-  Button,
-  Rating,
-  Skeleton,
-  SimpleGrid,
-  Divider,
-  Stack,
-} from "@mantine/core";
+import { Modal, Text, Button, SimpleGrid, Divider, Stack } from "@mantine/core";
 import { ProductCard } from "../product-card/ProductCard";
 
 export const ProductCart = ({

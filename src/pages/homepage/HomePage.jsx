@@ -1,9 +1,5 @@
 import { useEffect, useState } from "react";
-import {
-  useFetchProducts,
-  useFetchAllCategories,
-  useFetchProductsFromCategory,
-} from "../../apis/useProduct";
+import { useFetchProducts, useFetchAllCategories } from "../../apis/useProduct";
 import {
   AppShell,
   Navbar,
