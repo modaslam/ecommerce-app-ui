@@ -10,6 +10,7 @@ import {
   Button,
   Rating,
   Skeleton,
+  AspectRatio,
 } from "@mantine/core";
 import { Carousel } from "@mantine/carousel";
 import { useFetchSingleProduct } from "../../apis/useProduct";
@@ -39,16 +40,18 @@ export const ProductModal = ({ productId, isOpen, handleClose, addToCart }) => {
         <Carousel
           sx={{ maxWidth: 280 }}
           mx="auto"
-          height={300}
+          height={400}
           loop
           withIndicators
         >
           <Carousel.Slide>
-            <Image
-              src={productData?.image}
-              height={280}
-              alt={productData?.title}
-            />
+            <AspectRatio ratio={720 / 1080} sx={{ maxWidth: 300 }} mx="auto">
+              <Image
+                src={productData?.image}
+                height={300}
+                alt={productData?.title}
+              />
+            </AspectRatio>
           </Carousel.Slide>
           {/* ...other slides */}
         </Carousel>

@@ -8,6 +8,7 @@ import {
   Rating,
   Button,
   Flex,
+  AspectRatio,
 } from "@mantine/core";
 
 export const ProductCard = ({
@@ -29,7 +30,9 @@ export const ProductCard = ({
           }}
         >
           <Card.Section>
-            <Image src={product?.image} height={220} alt={product?.title} />
+            <AspectRatio ratio={720 / 1080} sx={{ maxWidth: 300 }} mx="auto">
+              <Image src={product?.image} height={300} alt={product?.title} />
+            </AspectRatio>
           </Card.Section>
 
           <Group position="apart" mt="md" mb="xs">
